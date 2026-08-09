@@ -1,0 +1,53 @@
+{
+  "formatVersion": 2,
+  "bundleVersion": 2,
+  "note": "PROVISIONAL WORDING. The patterns below were written from invented notification text, because no Guatemalan bank app was on hand to read a real one; roadmap 2.4 replaces each one as real samples arrive per bank. The package names these are matched against, by contrast, are now the real ones from each bank's Play listing. Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
+  "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the Q or GTQ marker, so a dollar-only notification already fails to parse. Whether a dual-currency one ('USD 35.00 (Q270.00)') should yield the quetzal amount is a question for a real sample — the point is that a USD anti-match would foreclose the answer, while the currency marker leaves it open. 'devoluci' is rejected on the expense templates only: a refund is not a purchase, but it is genuinely money arriving, and a bank that announces one deserves its own INCOME template once a sample shows the wording. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount ('Deposito minimo de Q500.00 para participar en el sorteo') otherwise parses as income.",
+  "templates": [
+    {
+      "id": "bi_card_purchase",
+      "version": 2,
+      "institution": "banco_industrial",
+      "type": "EXPENSE",
+      "priority": 20,
+      "match": "compra|consumo",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
+      "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
+      "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+el\\s+\\d|[.,]|$)",
+      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|final(?:izada)?\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})"
+    },
+    {
+      "id": "bi_credit",
+      "version": 2,
+      "institution": "banco_industrial",
+      "type": "INCOME",
+      "priority": 10,
+      "match": "acreditamiento|dep[oó]sito|abono|transferencia\\s+recibida",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
+      "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
+      "merchant": "\\bde\\s+(.+?)(?:\\s+(?:a|en)\\s+su\\s+cuenta|\\s+por\\b|[.,]|$)"
+    },
+    {
+      "id": "bac_card_purchase",
+      "version": 2,
+      "institution": "bac",
+      "type": "EXPENSE",
+      "priority": 20,
+      "match": "compra|consumo|transacci[oó]n",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
+      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)",
+      "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+tarjeta\\b|[.,]|$)",
+      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})"
+    },
+    {
+      "id": "bac_credit",
+      "version": 2,
+      "institution": "bac",
+      "type": "INCOME",
+      "priority": 10,
+      "match": "dep[oó]sito|acreditaci[oó]n|abono|nota\\s+de\\s+cr[eé]dito|transferencia\\s+recibida",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
+      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)"
+    }
+  ]
+}
