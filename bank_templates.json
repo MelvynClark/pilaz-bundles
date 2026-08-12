@@ -1,12 +1,59 @@
 {
   "formatVersion": 2,
-  "bundleVersion": 3,
-  "note": "Revision 3 was published with no pattern changes, to verify roadmap 3.1 delivery end to end on a device. PROVISIONAL WORDING. The patterns below were written from invented notification text, because no Guatemalan bank app was on hand to read a real one; roadmap 2.4 replaces each one as real samples arrive per bank. The package names these are matched against, by contrast, are now the real ones from each bank's Play listing. Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
-  "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the Q or GTQ marker, so a dollar-only notification already fails to parse. Whether a dual-currency one ('USD 35.00 (Q270.00)') should yield the quetzal amount is a question for a real sample — the point is that a USD anti-match would foreclose the answer, while the currency marker leaves it open. 'devoluci' is rejected on the expense templates only: a refund is not a purchase, but it is genuinely money arriving, and a bank that announces one deserves its own INCOME template once a sample shows the wording. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount ('Deposito minimo de Q500.00 para participar en el sorteo') otherwise parses as income.",
+  "bundleVersion": 4,
+  "note": "Each template carries a 'source' field the reader ignores: 'real' means the patterns were written from notifications read off a phone and exported through the debug sample screen, 'invented' means they were written before any sample for that shape existed and are still waiting for one (roadmap 2.4). Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
+  "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the currency marker, so a notification about a dollar account already fails to parse. Real wording made that concrete — one bank writes quetzales as 'Q.' and dollars as 'US.' in otherwise identical sentences, so the marker sits inside the gate as well as inside the amount pattern and the dollar version is passed over rather than read as quetzales. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount otherwise parses as income.",
   "templates": [
+    {
+      "id": "bi_bimovil_debit",
+      "version": 1,
+      "source": "real, 2026-08-12",
+      "institution": "banco_industrial",
+      "type": "EXPENSE",
+      "priority": 30,
+      "match": "d[eé]bito\\s+por\\s+Q\\.?\\s*\\d",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|sorteo|promoci[oó]n|participa|premio",
+      "amount": "d[eé]bito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+    },
+    {
+      "id": "bi_bimovil_credit",
+      "version": 1,
+      "source": "real, 2026-08-12",
+      "institution": "banco_industrial",
+      "type": "INCOME",
+      "priority": 30,
+      "match": "cr[eé]dito\\s+por\\s+Q\\.?\\s*\\d",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
+      "amount": "cr[eé]dito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+    },
+    {
+      "id": "gyt_ach_credit",
+      "version": 1,
+      "source": "real, 2026-08-12",
+      "institution": "gyt_continental",
+      "type": "INCOME",
+      "priority": 30,
+      "match": "transf\\S*\\s+ach\\b.{0,20}\\bcr[eé]dito\\b",
+      "reject": "rechaz|denegad|declinad|no\\s+autorizad|revers|anulad|devoluci|iniciado\\s+sesi[oó]n|sorteo|promoci[oó]n|participa|premio",
+      "amount": "monto:?\\s*Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+    },
+    {
+      "id": "wallet_tap_purchase",
+      "version": 1,
+      "source": "real, 2026-08-12",
+      "institution": "google_wallet",
+      "type": "EXPENSE",
+      "priority": 30,
+      "match": "\\bGTQ\\s?[\\d,]+(?:\\.\\d{1,2})?\\s+with\\b",
+      "reject": "declin|denied|rechaz|refund|reembols|devoluci|revers(?:ed|ada?)|cancel(?:ed|led|ada?)|anulad",
+      "amount": "\\b(GTQ\\s?[\\d,]+(?:\\.\\d{1,2})?)",
+      "merchant": "^(.+?)[\\r\\n]+GTQ\\s?[\\d,]",
+      "cardLast4": "[\\u2022\\u25CF*]{1,4}\\s*(\\d{4})\\b"
+    },
     {
       "id": "bi_card_purchase",
       "version": 2,
+      "source": "invented, awaiting a sample of this bank's card-purchase alert",
       "institution": "banco_industrial",
       "type": "EXPENSE",
       "priority": 20,
@@ -19,6 +66,7 @@
     {
       "id": "bi_credit",
       "version": 2,
+      "source": "invented, awaiting a sample of this bank's deposit alert",
       "institution": "banco_industrial",
       "type": "INCOME",
       "priority": 10,
@@ -30,6 +78,7 @@
     {
       "id": "bac_card_purchase",
       "version": 2,
+      "source": "invented, awaiting a sample of this bank's card-purchase alert",
       "institution": "bac",
       "type": "EXPENSE",
       "priority": 20,
@@ -42,6 +91,7 @@
     {
       "id": "bac_credit",
       "version": 2,
+      "source": "invented, awaiting a sample of this bank's deposit alert",
       "institution": "bac",
       "type": "INCOME",
       "priority": 10,
