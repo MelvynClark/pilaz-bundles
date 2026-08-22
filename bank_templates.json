@@ -1,6 +1,6 @@
 {
-  "formatVersion": 2,
-  "bundleVersion": 4,
+  "formatVersion": 3,
+  "bundleVersion": 6,
   "note": "Each template carries a 'source' field the reader ignores: 'real' means the patterns were written from notifications read off a phone and exported through the debug sample screen, 'invented' means they were written before any sample for that shape existed and are still waiting for one (roadmap 2.4). Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
   "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the currency marker, so a notification about a dollar account already fails to parse. Real wording made that concrete — one bank writes quetzales as 'Q.' and dollars as 'US.' in otherwise identical sentences, so the marker sits inside the gate as well as inside the amount pattern and the dollar version is passed over rather than read as quetzales. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount otherwise parses as income.",
   "templates": [
@@ -13,7 +13,8 @@
       "priority": 30,
       "match": "d[eé]bito\\s+por\\s+Q\\.?\\s*\\d",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|sorteo|promoci[oó]n|participa|premio",
-      "amount": "d[eé]bito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+      "amount": "d[eé]bito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+      "currency": "GTQ"
     },
     {
       "id": "bi_bimovil_credit",
@@ -24,7 +25,8 @@
       "priority": 30,
       "match": "cr[eé]dito\\s+por\\s+Q\\.?\\s*\\d",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
-      "amount": "cr[eé]dito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+      "amount": "cr[eé]dito\\s+por\\s+Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+      "currency": "GTQ"
     },
     {
       "id": "gyt_ach_credit",
@@ -35,7 +37,8 @@
       "priority": 30,
       "match": "transf\\S*\\s+ach\\b.{0,20}\\bcr[eé]dito\\b",
       "reject": "rechaz|denegad|declinad|no\\s+autorizad|revers|anulad|devoluci|iniciado\\s+sesi[oó]n|sorteo|promoci[oó]n|participa|premio",
-      "amount": "monto:?\\s*Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)"
+      "amount": "monto:?\\s*Q\\.?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+      "currency": "GTQ"
     },
     {
       "id": "wallet_tap_purchase",
@@ -48,7 +51,8 @@
       "reject": "declin|denied|rechaz|refund|reembols|devoluci|revers(?:ed|ada?)|cancel(?:ed|led|ada?)|anulad",
       "amount": "\\b(GTQ\\s?[\\d,]+(?:\\.\\d{1,2})?)",
       "merchant": "^(.+?)[\\r\\n]+GTQ\\s?[\\d,]",
-      "cardLast4": "[\\u2022\\u25CF*]{1,4}\\s*(\\d{4})\\b"
+      "cardLast4": "[\\u2022\\u25CF*]{1,4}\\s*(\\d{4})\\b",
+      "currency": "GTQ"
     },
     {
       "id": "bi_card_purchase",
@@ -61,7 +65,8 @@
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
       "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
       "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+el\\s+\\d|[.,]|$)",
-      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|final(?:izada)?\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})"
+      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|final(?:izada)?\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})",
+      "currency": "GTQ"
     },
     {
       "id": "bi_credit",
@@ -73,7 +78,8 @@
       "match": "acreditamiento|dep[oó]sito|abono|transferencia\\s+recibida",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
       "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
-      "merchant": "\\bde\\s+(.+?)(?:\\s+(?:a|en)\\s+su\\s+cuenta|\\s+por\\b|[.,]|$)"
+      "merchant": "\\bde\\s+(.+?)(?:\\s+(?:a|en)\\s+su\\s+cuenta|\\s+por\\b|[.,]|$)",
+      "currency": "GTQ"
     },
     {
       "id": "bac_card_purchase",
@@ -86,7 +92,8 @@
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
       "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)",
       "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+tarjeta\\b|[.,]|$)",
-      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})"
+      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})",
+      "currency": "GTQ"
     },
     {
       "id": "bac_credit",
@@ -97,7 +104,60 @@
       "priority": 10,
       "match": "dep[oó]sito|acreditaci[oó]n|abono|nota\\s+de\\s+cr[eé]dito|transferencia\\s+recibida",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
-      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)"
+      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)",
+      "currency": "GTQ"
+    },
+    {
+      "id": "promerica_consumo_gtq",
+      "version": 1,
+      "institution": "promerica",
+      "type": "EXPENSE",
+      "currency": "GTQ",
+      "priority": 10,
+      "source": "real, 2026-08-22",
+      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+[\\d,]+(?:\\.\\d{1,2})?\\s+quetzales\\b",
+      "amount": "\\bmonto\\s+([\\d,]+(?:\\.\\d{1,2})?)\\s+quetzales\\b",
+      "merchant": "\\bcomercio\\s+(.+?)(?:\\s{2,}|\\s+\\d{2}/\\d{2}/\\d{4}|$)",
+      "cardLast4": "promerica\\s+\\*{1,4}(\\d{4})\\b",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[oó]n|participa|premio"
+    },
+    {
+      "id": "promerica_consumo_usd",
+      "version": 1,
+      "institution": "promerica",
+      "type": "EXPENSE",
+      "currency": "USD",
+      "priority": 10,
+      "source": "real, 2026-08-16",
+      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+[\\d,]+(?:\\.\\d{1,2})?\\s+dolares\\b",
+      "amount": "\\bmonto\\s+([\\d,]+(?:\\.\\d{1,2})?)\\s+dolares\\b",
+      "merchant": "\\bcomercio\\s+(.+?)(?:\\s{2,}|\\s+\\d{2}/\\d{2}/\\d{4}|$)",
+      "cardLast4": "promerica\\s+\\*{1,4}(\\d{4})\\b",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[oó]n|participa|premio"
+    },
+    {
+      "id": "bi_bimovil_debit_usd",
+      "version": 1,
+      "institution": "banco_industrial",
+      "type": "EXPENSE",
+      "currency": "USD",
+      "priority": 10,
+      "source": "real, 2026-08-16",
+      "match": "d[eé]bito\\s+por\\s+US\\.?\\s*\\d",
+      "amount": "d[eé]bito\\s+por\\s+(US\\.?\\s*[\\d,]+(?:\\.\\d{1,2})?)",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|sorteo|promoci[oó]n|participa|premio"
+    },
+    {
+      "id": "bi_bimovil_credit_usd",
+      "version": 1,
+      "institution": "banco_industrial",
+      "type": "INCOME",
+      "currency": "USD",
+      "priority": 10,
+      "source": "real, 2026-08-16",
+      "match": "cr[eé]dito\\s+por\\s+US\\.?\\s*\\d",
+      "amount": "cr[eé]dito\\s+por\\s+(US\\.?\\s*[\\d,]+(?:\\.\\d{1,2})?)",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio"
     }
   ]
 }
