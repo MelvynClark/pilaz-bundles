@@ -1,8 +1,103 @@
 {
-  "formatVersion": 3,
-  "bundleVersion": 6,
+  "formatVersion": 4,
+  "bundleVersion": 9,
   "note": "Each template carries a 'source' field the reader ignores: 'real' means the patterns were written from notifications read off a phone and exported through the debug sample screen, 'invented' means they were written before any sample for that shape existed and are still waiting for one (roadmap 2.4). Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
   "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the currency marker, so a notification about a dollar account already fails to parse. Real wording made that concrete — one bank writes quetzales as 'Q.' and dollars as 'US.' in otherwise identical sentences, so the marker sits inside the gate as well as inside the amount pattern and the dollar version is passed over rather than read as quetzales. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount otherwise parses as income.",
+  "ignoreNote": "'ignore' holds the notifications that are knowably NOT movements (CaptureRoadmap CP1.2): marketing, login notices, one-time passwords, statements, instalment restructures, product prompts. A rule is per bank exactly as a template is, and it is only ever tried against text NO template read - so an over-broad rule can never silence a bank whose template works. Reasons come from IgnoreReason; one the app does not know drops that rule and keeps the rest. Nothing here is a one-way door: an IGNORED notification keeps its text and is re-examined by roadmap 3.6's sweep, so deleting a rule and bumping bundleVersion hands back every row it took. That is why these can be published as freely as a template can. Every pattern below was written from notifications exported off a real phone in August 2026; what is published is the pattern, never the text.",
+  "ignore": [
+    {
+      "id": "gyt_session_alert",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "gyt_continental",
+      "reason": "SESSION_ALERT",
+      "priority": 20,
+      "match": "\\bha[s]?\\s+iniciado\\s+sesi[oó]n\\b"
+    },
+    {
+      "id": "gyt_token",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "gyt_continental",
+      "reason": "ONE_TIME_PASSWORD",
+      "priority": 20,
+      "match": "\\b(?:tu|su)\\s+token\\b|\\btoken\\s+para\\b"
+    },
+    {
+      "id": "gyt_marketing",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "gyt_continental",
+      "reason": "MARKETING",
+      "priority": 10,
+      "match": "^\\s*banco\\s+gtc\\s*:"
+    },
+    {
+      "id": "promerica_statement",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "promerica",
+      "reason": "STATEMENT",
+      "priority": 30,
+      "match": "\\bestado\\s+de\\s+cuenta\\b"
+    },
+    {
+      "id": "promerica_installment_transfer",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "promerica",
+      "reason": "INSTALLMENT_PLAN",
+      "priority": 30,
+      "match": "\\bextrafinanciamiento\\b|\\btraslado\\s+de\\s+tus\\s+consumos\\s+a\\s+cuotas\\b"
+    },
+    {
+      "id": "promerica_marketing",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "promerica",
+      "reason": "MARKETING",
+      "priority": 10,
+      "match": "\\bsorteos?\\b|\\bpremios?\\b|\\bparticipa\\w*\\b|\\bgana\\w*\\s+(?:hasta|dinero|m[aá]s)\\b|\\bjade\\b|\\bcategor[ií]a\\s+m[aá]s\\s+(?:exclusiva|premium|alto)\\b|\\bab(?:re|rir)\\b[^\\n]{0,24}\\btu\\s+cuenta\\b|\\btu\\s+cuenta\\s+puede\\s+hacerte\\s+ganar\\b|\\btraslad(?:a|ando)\\b|\\bhasta\\s+en\\s+\\d+\\s+cuotas\\b|\\baprovecha\\b|\\bdejar\\s+pasar\\b|\\bd[eé]jar[ií]as\\s+pasar\\b|\\bte\\s+caer[ií]an\\s+bien\\b|\\btarjeta\\s+premium\\b|\\bya\\s+est[aá]\\s+aprobada\\b"
+    },
+    {
+      "id": "bac_marketing",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "bac",
+      "reason": "MARKETING",
+      "priority": 10,
+      "match": "\\bgana\\s+hasta\\b|\\bganar\\s+hasta\\b|\\boportunidad\\s+para\\s+ganar\\b|\\btasa\\s+(?:de\\s+inter[eé]s\\s+)?preferencial\\b|\\bnueva\\s+tasa\\b|\\bte\\s+pagamos\\s+intereses\\b"
+    },
+    {
+      "id": "wallet_virtual_card_prompt",
+      "version": 1,
+      "source": "real, 2026-09-01",
+      "institution": "google_wallet",
+      "reason": "PRODUCT_PROMPT",
+      "priority": 20,
+      "match": "\\bcreate\\s+a\\s+virtual\\s+card\\b|\\bshop\\s+more\\s+securely\\b"
+    },
+    {
+      "id": "gyt_sms_token",
+      "version": 1,
+      "source": "real, 2026-09-02, transcribed rather than exported (CaptureRoadmap CP3.4)",
+      "institution": "gyt_continental",
+      "channel": "SMS",
+      "reason": "ONE_TIME_PASSWORD",
+      "priority": 20,
+      "match": "\\btoken\\s+para\\b|\\b(?:tu|su|el)\\s+token\\b"
+    },
+    {
+      "id": "bac_sms_marketing",
+      "version": 1,
+      "source": "real, 2026-09-02, transcribed rather than exported (CaptureRoadmap CP3.4)",
+      "institution": "bac",
+      "channel": "SMS",
+      "reason": "MARKETING",
+      "priority": 10,
+      "match": "https?://g\\.bac\\.gt/AO"
+    }
+  ],
   "templates": [
     {
       "id": "bi_bimovil_debit",
@@ -55,82 +150,29 @@
       "currency": "GTQ"
     },
     {
-      "id": "bi_card_purchase",
-      "version": 2,
-      "source": "invented, awaiting a sample of this bank's card-purchase alert",
-      "institution": "banco_industrial",
-      "type": "EXPENSE",
-      "priority": 20,
-      "match": "compra|consumo",
-      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
-      "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
-      "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+el\\s+\\d|[.,]|$)",
-      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|final(?:izada)?\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})",
-      "currency": "GTQ"
-    },
-    {
-      "id": "bi_credit",
-      "version": 2,
-      "source": "invented, awaiting a sample of this bank's deposit alert",
-      "institution": "banco_industrial",
-      "type": "INCOME",
-      "priority": 10,
-      "match": "acreditamiento|dep[oó]sito|abono|transferencia\\s+recibida",
-      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
-      "amount": "(?:por|de)\\s+(Q\\s?[\\d,]+(?:\\.\\d{1,2})?)",
-      "merchant": "\\bde\\s+(.+?)(?:\\s+(?:a|en)\\s+su\\s+cuenta|\\s+por\\b|[.,]|$)",
-      "currency": "GTQ"
-    },
-    {
-      "id": "bac_card_purchase",
-      "version": 2,
-      "source": "invented, awaiting a sample of this bank's card-purchase alert",
-      "institution": "bac",
-      "type": "EXPENSE",
-      "priority": 20,
-      "match": "compra|consumo|transacci[oó]n",
-      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|intento\\s+de\\s+compra|sorteo|promoci[oó]n|participa|premio",
-      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)",
-      "merchant": "\\ben\\s+(.+?)(?:\\s+con\\s+tarjeta|\\s+tarjeta\\b|[.,]|$)",
-      "cardLast4": "(?:terminaci[oó]n|termina\\s+en|tarjeta)\\s*\\*{0,4}\\s*(\\d{4})",
-      "currency": "GTQ"
-    },
-    {
-      "id": "bac_credit",
-      "version": 2,
-      "source": "invented, awaiting a sample of this bank's deposit alert",
-      "institution": "bac",
-      "type": "INCOME",
-      "priority": 10,
-      "match": "dep[oó]sito|acreditaci[oó]n|abono|nota\\s+de\\s+cr[eé]dito|transferencia\\s+recibida",
-      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio",
-      "amount": "(?:por|de)\\s+((?:GTQ|Q)\\s?[\\d,]+(?:\\.\\d{1,2})?)",
-      "currency": "GTQ"
-    },
-    {
       "id": "promerica_consumo_gtq",
-      "version": 1,
+      "version": 2,
       "institution": "promerica",
       "type": "EXPENSE",
       "currency": "GTQ",
       "priority": 10,
-      "source": "real, 2026-08-22",
-      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+[\\d,]+(?:\\.\\d{1,2})?\\s+quetzales\\b",
-      "amount": "\\bmonto\\s+([\\d,]+(?:\\.\\d{1,2})?)\\s+quetzales\\b",
+      "source": "real, 2026-08-22; sub-unit amounts 2026-09-01",
+      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+(?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2})\\s+quetzales\\b",
+      "amount": "\\bmonto\\s+((?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2}))\\s+quetzales\\b",
       "merchant": "\\bcomercio\\s+(.+?)(?:\\s{2,}|\\s+\\d{2}/\\d{2}/\\d{4}|$)",
       "cardLast4": "promerica\\s+\\*{1,4}(\\d{4})\\b",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[oó]n|participa|premio"
     },
     {
       "id": "promerica_consumo_usd",
-      "version": 1,
+      "version": 2,
       "institution": "promerica",
       "type": "EXPENSE",
       "currency": "USD",
       "priority": 10,
-      "source": "real, 2026-08-16",
-      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+[\\d,]+(?:\\.\\d{1,2})?\\s+dolares\\b",
-      "amount": "\\bmonto\\s+([\\d,]+(?:\\.\\d{1,2})?)\\s+dolares\\b",
+      "source": "real, 2026-08-16; sub-unit amounts 2026-09-01",
+      "match": "consumo\\s+promerica\\b.{0,40}\\bmonto\\s+(?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2})\\s+dolares\\b",
+      "amount": "\\bmonto\\s+((?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2}))\\s+dolares\\b",
       "merchant": "\\bcomercio\\s+(.+?)(?:\\s{2,}|\\s+\\d{2}/\\d{2}/\\d{4}|$)",
       "cardLast4": "promerica\\s+\\*{1,4}(\\d{4})\\b",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[oó]n|participa|premio"
@@ -158,6 +200,35 @@
       "match": "cr[eé]dito\\s+por\\s+US\\.?\\s*\\d",
       "amount": "cr[eé]dito\\s+por\\s+(US\\.?\\s*[\\d,]+(?:\\.\\d{1,2})?)",
       "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|sorteo|promoci[oó]n|participa|premio"
+    },
+    {
+      "id": "gyt_sms_consumo_gtq",
+      "version": 1,
+      "institution": "gyt_continental",
+      "channel": "SMS",
+      "type": "EXPENSE",
+      "currency": "GTQ",
+      "priority": 30,
+      "source": "real, 2026-09-02, transcribed from the phone's Messages app rather than exported (CaptureRoadmap CP3.4) - 49 quetzal purchases; re-verify against an export before trusting the byte-level detail",
+      "match": "consumo\\s+tarjeta\\s+cr[e\u00e9]dito\\b.{0,80}\\bmonto:\\s*Q\\s*\\.?\\s*(?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2})",
+      "amount": "\\bmonto:\\s*Q\\s*\\.?\\s*((?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2}))",
+      "merchant": "\\blocalidad:\\s((?:(?!\\s{2,}).){1,25})",
+      "cardLast4": "\\bcon\\s+la\\s+cuenta\\s+(\\d{4})\\b",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[o\u00f3]n|participa|premio"
+    },
+    {
+      "id": "bac_sms_purchase_gtq",
+      "version": 1,
+      "institution": "bac",
+      "channel": "SMS",
+      "type": "EXPENSE",
+      "currency": "GTQ",
+      "priority": 30,
+      "source": "real, 2026-09-02, transcribed from the phone's Messages app rather than exported (CaptureRoadmap CP3.4) - one recurring charge seen twice, so the merchant field's width is deliberately not assumed",
+      "match": "\\bcompra\\s+aprobada\\s+por\\s+Q\\s*\\.?\\s*(?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2})",
+      "amount": "\\bpor\\s+Q\\s*\\.?\\s*((?:[\\d,]+(?:\\.\\d{1,2})?|\\.\\d{1,2}))",
+      "merchant": "\\ben\\s+(.+?)(?:\\s{2,}|\\s+el\\s+\\d{2}/\\d{2}/\\d{2}\\b)",
+      "reject": "rechaz|denegad|declinad|no\\s+(?:fue\\s+)?aprobad|no\\s+autorizad|revers|anulad|devoluci|reembols|sorteo|promoci[o\u00f3]n|participa|premio"
     }
   ]
 }

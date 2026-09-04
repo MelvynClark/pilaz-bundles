@@ -1,0 +1,72 @@
+{
+  "formatVersion": 1,
+  "bundleVersion": 2,
+  "note": "CaptureRoadmap CP3.6a. Which apps and which SMS addresses count as a bank. Read by BankDirectoryJson; the app falls back to BankDirectory.SHIPPED, which is compiled in rather than an asset, because an unreadable whitelist would stop capture for every bank at once. A wrong identifier here captures nothing and reports nothing, which is indistinguishable from a bank that has not sent anything yet - so every entry carries a 'source' field the reader ignores, saying whether it was read off a real phone. Never write an identifier from a website.",
+  "apps": [
+    {
+      "institution": "banco_industrial",
+      "packageName": "gt.com.bi.bienlinea",
+      "appName": "Bi en Linea",
+      "source": "real, 2026-08-05 - captured on the developer's phone"
+    },
+    {
+      "institution": "bac",
+      "packageName": "net.bac.sbe.android",
+      "appName": "Banca Movil BAC",
+      "source": "real, 2026-08-31 - captured on the developer's phone (marketing only; its purchases arrive by SMS)"
+    },
+    {
+      "institution": "banrural",
+      "packageName": "org.ctk.bancamovil",
+      "appName": "BANRURAL",
+      "source": "play listing, 2026-08-04 - never confirmed on a phone, no account"
+    },
+    {
+      "institution": "bam",
+      "packageName": "com.bam.personas",
+      "appName": "Bamapp Personas",
+      "source": "play listing, 2026-08-04 - never confirmed on a phone, no account; BAM ships two listings and both are whitelisted"
+    },
+    {
+      "institution": "bam",
+      "packageName": "com.elementalgeeks.bam",
+      "appName": "Bamapp",
+      "source": "play listing, 2026-08-04 - never confirmed on a phone, no account; the second of BAM's two listings"
+    },
+    {
+      "institution": "gyt_continental",
+      "packageName": "com.bancacel.bancacelweb2",
+      "appName": "GTCApp",
+      "source": "real, 2026-08-31 - captured on the developer's phone (sessions and marketing only; its purchases arrive by SMS)"
+    },
+    {
+      "institution": "promerica",
+      "packageName": "com.digitalgeko.promerica",
+      "appName": "Banco Promerica Guatemala",
+      "source": "real, 2026-08-31 - captured on the developer's phone"
+    },
+    {
+      "institution": "google_wallet",
+      "packageName": "com.google.android.apps.walletnfcrel",
+      "appName": "Google Wallet",
+      "source": "real, 2026-08-31 - captured on the developer's phone; a supplementary source, not a bank"
+    }
+  ],
+  "senders": [
+    {
+      "institution": "bac",
+      "address": "BAC",
+      "source": "real, 2026-09-01 - read off the developer's phone; an alphanumeric sender id"
+    },
+    {
+      "institution": "gyt_continental",
+      "address": "5400 1718",
+      "source": "real, 2026-09-01 - read off the developer's phone; arrives as 50254001718"
+    },
+    {
+      "institution": "banco_industrial",
+      "address": "+2424",
+      "source": "real, 2026-09-01 - read off the developer's phone; a short code, mostly income alerts"
+    }
+  ]
+}

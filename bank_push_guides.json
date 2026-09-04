@@ -1,11 +1,12 @@
 {
-  "formatVersion": 1,
-  "bundleVersion": 1,
-  "note": "Roadmap 2.9. How to switch a bank's push alerts on, inside that bank's own app. Notification access lets Pilaz READ those alerts; it does not make a bank SEND them, and most banks ship with them off. Read by BankPushGuideJson, drawn by capture/ui/guide. The Spanish here is the one exception to the strings.xml rule, because the whole point of a data file is that roadmap 3.1 can deliver a corrected set without an app release, which strings.xml can never be.",
-  "howToAdd": "One entry per bank. 'institution' is an Institution.key (banco_industrial, bac, banrural, bam, gyt_continental, promerica, google_wallet). 'appName' is the app's name as it appears on the phone. 'steps' are the menu labels IN ORDER, copied verbatim off the phone while testing that bank — accents, capitalisation and wording exactly as the app shows them. 'note' is one optional extra line, for an alert type that has to be enabled separately. 'verifiedOn' records when the path was last seen with your own eyes; nothing reads it back, it is there so a stale guide can be spotted. A bank with no entry here is NOT broken: it falls back to generic steps that name no menu, which is the honest answer until someone reads the real ones.",
-  "rule": "NEVER write these steps from memory, from a bank's website, or from a screenshot in a help article. This is the same rule roadmap 2.4 imposed on notification samples and for the same reason: steps that name a menu which does not exist send the user hunting through an app they already distrust, and they cost more than saying less would. Generic steps go stale never; invented steps go stale immediately.",
+  "formatVersion": 2,
+  "bundleVersion": 2,
+  "note": "Roadmap 2.9. How to switch a bank's alerts on, inside that bank's own app. Notification access lets Pilaz READ those alerts; it does not make a bank SEND them, and most banks ship with them off. Read by BankPushGuideJson, drawn by capture/ui/guide. The Spanish here is the one exception to the strings.xml rule, because the whole point of a data file is that roadmap 3.1 can deliver a corrected set without an app release, which strings.xml can never be.",
+  "howToAdd": "One entry per bank PER CHANNEL. 'institution' is an Institution.key (banco_industrial, bac, banrural, bam, gyt_continental, promerica, google_wallet). 'channel' is PUSH or SMS and defaults to PUSH when absent, which is what every entry written before CaptureRoadmap CP3.5 is; a bank whose purchases only arrive as text messages (BAC, G&T) wants an SMS entry, because its notification switch is not the one that helps. 'appName' is the app's name as it appears on the phone. 'steps' are the menu labels IN ORDER, copied verbatim off the phone while testing that bank - accents, capitalisation and wording exactly as the app shows them. 'note' is one optional extra line, for an alert type that has to be enabled separately. 'verifiedOn' records when the path was last seen with your own eyes; nothing reads it back, it is there so a stale guide can be spotted. A bank with no entry here is NOT broken: it falls back to generic steps that name no menu - and to the generic steps FOR ITS OWN CHANNEL - which is the honest answer until someone reads the real ones.",
+  "rule": "NEVER write these steps from memory, from a bank's website, or from a screenshot in a help article. This is the same rule roadmap 2.4 imposed on notification samples and for the same reason: steps that name a menu which does not exist send the user hunting through an app they already distrust, and they cost more than saying less would. Generic steps go stale never; invented steps go stale immediately. An SMS entry is held to this exactly as a push entry is: the SMS-alert switch is a different screen inside the bank's app, so a push path relabelled 'SMS' is an invented path.",
   "exampleShape": {
     "institution": "banco_industrial",
+    "channel": "PUSH",
     "appName": "Bi en Línea",
     "verifiedOn": "2026-08-07",
     "steps": [
@@ -14,5 +15,15 @@
     ],
     "note": "PLACEHOLDER — optional single line, or leave the key out"
   },
-  "guides": []
+  "guides": [],
+  "exampleShapeSms": {
+    "institution": "gyt_continental",
+    "channel": "SMS",
+    "appName": "PLACEHOLDER — the app's name as it appears on the phone",
+    "verifiedOn": "PLACEHOLDER — the date you read this off a phone",
+    "steps": [
+      "PLACEHOLDER — where the SMS-alert switch actually lives, read off the phone",
+      "PLACEHOLDER — the second, and so on"
+    ]
+  }
 }
