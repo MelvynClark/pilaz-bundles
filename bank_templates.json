@@ -1,6 +1,6 @@
 {
   "formatVersion": 4,
-  "bundleVersion": 9,
+  "bundleVersion": 10,
   "note": "Each template carries a 'source' field the reader ignores: 'real' means the patterns were written from notifications read off a phone and exported through the debug sample screen, 'invented' means they were written before any sample for that shape existed and are still waiting for one (roadmap 2.4). Patterns are matched case-insensitively and per line; each field is taken from the first capturing group. 'match' decides whether the template applies at all, 'reject' overrules it, 'amount' is required, 'merchant' and 'cardLast4' are optional. 'type' is the template's own answer to money in or money out, since the text never carries a sign.",
   "rejectNote": "'reject' exists because a bank announces a declined purchase, a reversal and an annulment in nearly the wording it uses for the purchase itself, so a gate of 'compra' alone turns money that never left the account into a pending movement. Foreign currency is deliberately NOT handled here: every amount pattern requires the currency marker, so a notification about a dollar account already fails to parse. Real wording made that concrete — one bank writes quetzales as 'Q.' and dollars as 'US.' in otherwise identical sentences, so the marker sits inside the gate as well as inside the amount pattern and the dollar version is passed over rather than read as quetzales. The promotional words are the most provisional part of this file: a marketing push that happens to contain an amount otherwise parses as income.",
   "ignoreNote": "'ignore' holds the notifications that are knowably NOT movements (CaptureRoadmap CP1.2): marketing, login notices, one-time passwords, statements, instalment restructures, product prompts. A rule is per bank exactly as a template is, and it is only ever tried against text NO template read - so an over-broad rule can never silence a bank whose template works. Reasons come from IgnoreReason; one the app does not know drops that rule and keeps the rest. Nothing here is a one-way door: an IGNORED notification keeps its text and is re-examined by roadmap 3.6's sweep, so deleting a rule and bumping bundleVersion hands back every row it took. That is why these can be published as freely as a template can. Every pattern below was written from notifications exported off a real phone in August 2026; what is published is the pattern, never the text.",
@@ -96,6 +96,21 @@
       "reason": "MARKETING",
       "priority": 10,
       "match": "https?://g\\.bac\\.gt/AO"
+    }
+  ],
+  "statementNote": "'statements' says how to read a credit-card statement one of the 'ignore' rules above has already set aside (CaptureRoadmap CP4.3). It never makes a statement into money - nothing moved, and counting the total as spending would double every purchase already on the card - it reads the date the bank wants paying, which is the one thing in that message only the user can act on. 'match' is the gate and 'dueDate' is the only pattern a rule cannot do without, since a statement with no date is a card row with nothing on it. 'total' and 'minimum' each capture a RUN of text in group 1 rather than one figure, because a Guatemalan card is frequently billed in both currencies at once; the app splits that run on '/' and reads each part, and an amount carrying no currency marker is dropped rather than assumed into quetzales. Adding this array did NOT move formatVersion: a build that cannot see it reads no statements and draws no card, which is exactly what every build before CP4.3 does.",
+  "statements": [
+    {
+      "id": "promerica_statement_gtq_usd",
+      "version": 1,
+      "institution": "promerica",
+      "priority": 30,
+      "source": "real, 2026-09-04, from one statement collected 2026-08-25 - the only statement any bank has sent in a month of capture. One sample is thin and the reader refuses rather than guesses; re-verify against the next one.",
+      "match": "\\bestado\\s+de\\s+cuenta\\b[\\s\\S]{0,400}?\\bfecha\\s+de\\s+pago\\b",
+      "dueDate": "\\bfecha\\s+de\\s+pago[\\s:]+(\\d{1,2}/\\d{1,2}/\\d{4})\\b",
+      "total": "\\bpago\\s+contado[\\s:]+([^\\n]*?)\\s+pago\\s+m[i\u00ed]nimo\\b",
+      "minimum": "\\bpago\\s+m[i\u00ed]nimo[\\s:]+([^\\n]*?)\\s+fecha\\s+de\\s+pago\\b",
+      "cardLast4": "\\btarjeta\\s*\\*+\\s*(\\d{4})\\b"
     }
   ],
   "templates": [
